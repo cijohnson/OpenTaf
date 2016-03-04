@@ -2,21 +2,20 @@
 """
 
 import sys
-import logging
 import argparse
 
-from engine import OpenTafEngine
-from opentaf.signals import SIG_INIT
+from opentaf.signals import SIG_SWITCH
 from opentaf.utils.logger import setup_logger
-from opentaf.engine.plugger import get_plugins, plug
+from opentaf.engine.plugger import get_switches, plug
 
 log = setup_logger('opentaf')
 
 
-def parse_args(argv, plugins):
+def parse_args(argv, switches):
     parser = argparse.ArgumentParser()
-    for plugin in plugins:
-        plugin.add_args(parser)
+    subparsers = parser.add_subparsers(dest='switch')
+    for switch in switches:
+        switch.add_args(subparsers)
 
     args = parser.parse_args(argv)
 
@@ -24,16 +23,13 @@ def parse_args(argv, plugins):
 
 
 def main(argv):
-    # Get the list of available plugins
-    plugins = get_plugins()
-    # Parse the commandline arguments, including plugin args
-    args = parse_args(argv, plugins)
-    # Plug in the required plugins depending on the commandline args
-    plug(plugins)
-    SIG_INIT.send(args)
-    # Start the test execution engine
-    engine = OpenTafEngine(args)
-    engine.start()
+    # Get the list of available switches
+    switches = get_switches()
+    # Parse the commandline arguments, including switch args
+    args = parse_args(argv, switches)
+    # Plug in the required switches depending on the commandline args
+    plug(switches, SIG_SWITCH)
+    SIG_SWITCH.send(args)
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

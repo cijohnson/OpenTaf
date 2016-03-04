@@ -15,7 +15,7 @@ def add_args(parser):
                         help="Enables disk space check")
 
 
-def plug(args):
+def connect(args):
     if args.enable_disk_check:
         SIG_PRERUN.connect(check_diskspace)
 
