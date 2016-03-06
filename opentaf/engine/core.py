@@ -2,7 +2,7 @@
 """
 
 from opentaf.signals import (SIG_PRERUN, SIG_POSTRUN, SIG_PRETEST,
-                             SIG_POSTTEST, SIG_DONE)
+                             SIG_POSTTEST, SIG_FINISH)
 
 
 class OpenTafEngine(object):
@@ -21,4 +21,4 @@ class OpenTafEngine(object):
         #     Emit POSTRUN signal to trigger pre-testsuite plugins
         #     SIG_POSTRUN.send()
         # Emit DONE signal for internal plugins
-        SIG_DONE.send()
+        SIG_FINISH.send()

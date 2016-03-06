@@ -4,15 +4,16 @@
 import sys
 import argparse
 
-from opentaf.signals import SIG_SWITCH
 from opentaf.utils.logger import setup_logger
-from opentaf.engine.plugger import get_switches, plug
+from opentaf.switches import get_switches, on_switch
 
 log = setup_logger('opentaf')
 
 
 def parse_args(argv, switches):
     parser = argparse.ArgumentParser()
+    parser.add_argument('-I', '--input-ini', default='~/opentaf.ini',
+                        help='Input INI file for this test run')
     subparsers = parser.add_subparsers(dest='switch')
     for switch in switches:
         switch.add_args(subparsers)
@@ -27,9 +28,8 @@ def main(argv):
     switches = get_switches()
     # Parse the commandline arguments, including switch args
     args = parse_args(argv, switches)
-    # Plug in the required switches depending on the commandline args
-    plug(switches, SIG_SWITCH)
-    SIG_SWITCH.send(args)
+    # Switch on the required switches depending on the commandline args
+    on_switch(switches, args)
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

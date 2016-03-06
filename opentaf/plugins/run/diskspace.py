@@ -21,6 +21,7 @@ def connect(args):
 
 
 def check_diskspace(sender, **kwargs):
+    import pdb; pdb.set_trace()
     log.info("Checking disk space.")
     use_percentage = get_disk_usage('~/')
     if use_percentage >= THRESHOLD:

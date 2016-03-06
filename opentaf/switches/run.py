@@ -4,8 +4,8 @@
 import logging
 
 from engine import OpenTafEngine
-from opentaf.signals import SIG_INIT
-from opentaf.engine.plugger import get_plugins, plug
+from opentaf.signals import SIG_SWITCH
+from opentaf.plugins import get_plugins, plug
 import opentaf.plugins.run
 
 RUN_PLUGINS = get_plugins(opentaf.plugins.run)
@@ -24,10 +24,18 @@ def add_args(parser):
 
 
 def connect(args):
+    """Connects to intended signal
+    """
     if args.switch == 'run':
-        # Plug in the required run switch plugins
-        plug(RUN_PLUGINS, SIG_INIT)
-        SIG_INIT.send(args)
-        # Start the test execution engine
-        engine = OpenTafEngine(args)
-        engine.start()
+        SIG_SWITCH.connect(run)
+
+
+def run(args):
+    """Connects all the plugins of run switch and
+    starts the test execution engine
+    """
+    # Plug in the required run switch plugins
+    plug(RUN_PLUGINS, args)
+    # Start the test execution engine
+    engine = OpenTafEngine(args)
+    engine.start()
